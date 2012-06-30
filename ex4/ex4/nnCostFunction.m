@@ -30,6 +30,13 @@ J = 0;
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
 
+% First, recode Y!
+y_rec = zeros(num_labels,m);
+
+for i = 1:m,
+  y_rec(y(i),i) = 1;
+end
+
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
 %               following parts.
@@ -39,6 +46,36 @@ Theta2_grad = zeros(size(Theta2));
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
 %
+
+
+% Compute J without regularization
+
+A1 = [ones(m,1) X];
+Z2 = A1*Theta1';
+A2 = [ones(m,1) sigmoid(Z2)];
+Z3 = A2*Theta2';
+A3 = sigmoid(Z3);
+
+J1 = sum(sum(y_rec'.* log(A3)));
+J2 = sum(sum((1-y_rec').*log(1-A3)));
+
+J = -(J1+J2)/m;
+
+% Compute regularization parameter
+
+% Layer 1
+Theta1_trunc = Theta1(1:end,2:end); % skip first column
+L1 = sum(sum(Theta1_trunc .* Theta1_trunc));
+
+% Layer 2
+Theta2_trunc = Theta2(1:end,2:end); % skip first column
+L2 = sum(sum(Theta2_trunc .* Theta2_trunc));
+
+Reg = (lambda * (L1+L2))/(2*m);
+
+J = J + Reg;
+
+
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
@@ -54,6 +91,17 @@ Theta2_grad = zeros(size(Theta2));
 %               over the training examples if you are implementing it for the 
 %               first time.
 %
+
+% Layer 3
+
+delta_3 = A3' - y_rec;
+Del_2 = delta_3 * A2;
+Theta2_grad = Del_2/m;
+% layer 2
+delta_2 = ((delta_3'*Theta2_trunc) .* sigmoidGradient(Z2))';
+Del_1 = delta_2 * A1;
+Theta1_grad = Del_1/m;
+
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
