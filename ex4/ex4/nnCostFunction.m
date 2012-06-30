@@ -109,7 +109,15 @@ Theta1_grad = Del_1/m;
 %               and Theta2_grad from Part 2.
 %
 
+Reg1_grad = zeros(size(Theta1_grad));
+Reg1_grad(1:end,2:end) = (lambda/m) * Theta1(1:end,2:end);
 
+Theta1_grad = Theta1_grad + Reg1_grad;
+
+Reg2_grad = zeros(size(Theta2_grad));
+Reg2_grad(1:end,2:end) = (lambda/m) * Theta2(1:end,2:end);
+
+Theta2_grad = Theta2_grad + Reg2_grad;
 
 
 
