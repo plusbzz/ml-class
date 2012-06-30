@@ -71,8 +71,7 @@ L1 = sum(sum(Theta1_trunc .* Theta1_trunc));
 Theta2_trunc = Theta2(1:end,2:end); % skip first column
 L2 = sum(sum(Theta2_trunc .* Theta2_trunc));
 
-Reg = (lambda * (L1+L2))/(2*m);
-
+Reg = (lambda * (L1+L2))/(2*m); % regularization
 J = J + Reg;
 
 
@@ -93,11 +92,11 @@ J = J + Reg;
 %
 
 % Layer 3
-
 delta_3 = A3' - y_rec;
 Del_2 = delta_3 * A2;
 Theta2_grad = Del_2/m;
-% layer 2
+
+% Layer 2
 delta_2 = ((delta_3'*Theta2_trunc) .* sigmoidGradient(Z2))';
 Del_1 = delta_2 * A1;
 Theta1_grad = Del_1/m;
