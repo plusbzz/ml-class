@@ -21,6 +21,13 @@ sigma2 = zeros(n, 1);
 %               should contain variance of the i-th feature.
 %
 
+mu = mean(X);
+
+all_mu = repmat(mu,m,1);
+err = (X-all_mu);
+err2 = err.*err;
+
+sigma2 = mean(err2);
 
 
 
